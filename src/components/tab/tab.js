@@ -41,8 +41,8 @@ class Tab extends Component {
     updateIframeUrl() {
     ChromeHelper.eval(`document.querySelector("meta[name='chrome-extension:my-tools']").getAttribute("content")`,
         (result) => {
-            // this.iframe.current.contentWindow.location = '';
-            // this.iframe.current.contentWindow.location = result;
+            this.iframe.current.contentWindow.location = '';
+            this.iframe.current.contentWindow.location = result;
             this.setState({
                 inspectedPageUrl: result,
                 iframeUpdating: true
@@ -52,7 +52,7 @@ class Tab extends Component {
     }
 
     updateInspectedUrl() {
-      // this.iframe.current.contentWindow.document;
+      this.iframe.current.contentWindow.document;
     }
 
     onAlertClick = (e) => {

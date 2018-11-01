@@ -3,12 +3,14 @@
   "description": "",
   "manifest_version": 2,
   "icons": { "64": "favicon.png" },
-  "browser_action": {
-    "default_icon": "favicon.png",
-    "default_popup": "index.html",
-    "default_title": "Web Launcher"
+  "background": {
+    "scripts": ["static/js/background.js"],
+    "persistent": true
   },
   "devtools_page": "index.html",
-  "permissions": [],
-  "version": "1.1.5"
+  "permissions": ["tabs", "webRequest",  "webRequestBlocking", "*://*/"],
+  "version": "1.1.5",
+  "content_scripts": [
+    {"js": ["static/js/iframe_content_script.js"], "matches": ["http://127.0.0.1:8000/my_tools.html"], "all_frames":true}
+  ]
 }

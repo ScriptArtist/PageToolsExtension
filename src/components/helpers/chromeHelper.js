@@ -1,5 +1,4 @@
 declare var chrome;
-declare var window;
 
 class ChromeHelper {
     static isExtension() {

@@ -1,3 +1,4 @@
+/*
 import ChromeHelper from "./components/helpers/chromeHelper";
 
 class IframeContentScript {
@@ -34,4 +35,4 @@ class IframeContentScript {
     }
 }
 
-new IframeContentScript();
+new IframeContentScript();*/

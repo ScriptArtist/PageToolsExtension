@@ -1,38 +1,37 @@
-/*
 import ChromeHelper from "./components/helpers/chromeHelper";
 
 class IframeContentScript {
     constructor() {
-        // document.getElementsByTagName('body')[0].innerHTML = 'test'
-        this.iframeMessageListener();
+        alert('init content script');
+        this.bindEvents();
     }
 
-    eval() {
-
+    bindEvents() {
+        window.addEventListener('message', this.onMessage);
     }
 
-    sendMessage(data, response) {
-        ChromeHelper.instance().runtime.sendMessage(data, response);
+    unbindEvents() {
+        alert('unbind');
+        window.removeEventListener('message', this.onMessage);
     }
 
-    iframeMessageListener() {
-        window.addEventListener("message", (event) => {
-            // We only accept messages from ourselves
-            if (event.source != window)
-                return;
 
-            console.log(event.data);
+    onMessage(event) {
+        // Only accept messages from the same frame
+        if (event.source !== window) {
+            return;
+        }
 
-            this.sendMessage(event.data, function (response) {
-                alert(response);
-            });
+        var message = event.data;
 
-            // if (event.data.type && (event.data.type == "FROM_PAGE")) {
-            //     console.log("Content script received: " + event.data.text);
-            //     port.postMessage(event.data.text);
-            // }
-        }, false);
+        // Only accept messages that we know are ours
+        if (typeof message !== 'object' || message === null || !message.source === 'my-tools-extension') {
+            return;
+        }
+
+        alert(message.params);
+        ChromeHelper.instance().runtime.sendMessage(message.params);
     }
 }
 
-new IframeContentScript();*/
+window.iframeContentScript = new IframeContentScript();

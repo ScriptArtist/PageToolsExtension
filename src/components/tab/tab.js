@@ -13,11 +13,32 @@ class Tab extends Component {
         };
         this.channel = null;
         this.iframe = React.createRef();
+        this.initContentScript();
         this.allowIframeOrigin();
         this.loadIframePage();
 
         // when inspected page updated
         ChromeHelper.instance().devtools.network.onNavigated.addListener(() => this.loadIframePage());
+    }
+
+    initContentScript() {
+        // Create a connection to the background page
+        var backgroundPageConnection = ChromeHelper.instance().runtime.connect({
+            name: "devtools-page"
+        });
+
+        backgroundPageConnection.onMessage.addListener(function (message) {
+            // Handle responses from the background page, if any
+        });
+
+        // Relay the tab ID to the background page
+        backgroundPageConnection.postMessage({
+            name: 'inject_script',
+            params: {
+                tabId: ChromeHelper.instance().devtools.inspectedWindow.tabId,
+                scriptToInject: "static/js/iframe_content_script.js"
+            }
+        });
     }
 
     allowIframeOrigin() {
@@ -57,11 +78,15 @@ class Tab extends Component {
     }
 
     initChannel() {
+        if(this.channel) {
+            this.channel.destroy();
+        }
+
         this.channel = Channel.build({
-            debugOutput: true,
+            // debugOutput: true,
             window: this.iframe.current.contentWindow,
             origin: "*",
-            scope: "testScope"
+            scope: "extensionScope"
         });
 
         this.bindChannelEvents();

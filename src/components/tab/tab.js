@@ -12,27 +12,39 @@ class Tab extends Component {
             iframeLoading: false
         };
         this.channel = null;
+        this.backgroundPageConnection = null;
         this.iframe = React.createRef();
         this.initContentScript();
         this.allowIframeOrigin();
         this.loadIframePage();
 
         // when inspected page updated
-        ChromeHelper.instance().devtools.network.onNavigated.addListener(() => this.loadIframePage());
+        ChromeHelper.instance().devtools.network.onNavigated.addListener(() => {
+            this.initContentScript();
+            this.loadIframePage()
+        });
     }
 
     initContentScript() {
         // Create a connection to the background page
-        var backgroundPageConnection = ChromeHelper.instance().runtime.connect({
+        this.backgroundPageConnection = ChromeHelper.instance().runtime.connect({
             name: "devtools-page"
         });
 
-        backgroundPageConnection.onMessage.addListener(function (message) {
+        this.backgroundPageConnection.onMessage.addListener((message) => {
             // Handle responses from the background page, if any
+            this.channel.call({method: "event", message: message, success: function() {}});
+        });
+
+        this.backgroundPageConnection.postMessage({
+            name: 'init',
+            params: {
+                tabId: ChromeHelper.instance().devtools.inspectedWindow.tabId
+            }
         });
 
         // Relay the tab ID to the background page
-        backgroundPageConnection.postMessage({
+        this.backgroundPageConnection.postMessage({
             name: 'inject_script',
             params: {
                 tabId: ChromeHelper.instance().devtools.inspectedWindow.tabId,
@@ -96,6 +108,13 @@ class Tab extends Component {
     bindChannelEvents() {
         this.channel.bind("alert", function (transaction, text) {
             alert(text);
+        });
+
+        this.channel.bind("event", (transaction, params) => {
+            this.backgroundPageConnection.postMessage({
+                name: 'event',
+                params: params
+             });
         });
 
         this.channel.bind("eval", function (transaction, code) {

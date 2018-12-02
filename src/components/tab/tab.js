@@ -33,7 +33,7 @@ class Tab extends Component {
 
         this.backgroundPageConnection.onMessage.addListener((message) => {
             // Handle responses from the background page, if any
-            this.channel.call({method: "event", message: message, success: function() {}});
+            this.channel.call({method: "event", params: message, success: function() {}});
         });
 
         this.backgroundPageConnection.postMessage({
@@ -76,7 +76,7 @@ class Tab extends Component {
     loadIframePage() {
         ChromeHelper.eval(`document.querySelector("meta[name='chrome-extension:my-tools']").getAttribute("content")`,
             (url) => {
-                if(url) {
+                //if(url) {
                     this.iframe.current.contentWindow.location = '';
                     this.iframe.current.contentWindow.location = url;
                     this.setState({
@@ -84,7 +84,7 @@ class Tab extends Component {
                         iframeLoading: true
                     });
                     this.initChannel();
-                }
+                //}
             }
         );
     }
@@ -139,7 +139,17 @@ class Tab extends Component {
     render() {
         return (
             <div className="tab">
-                <iframe ref={this.iframe} className="tab__iframe" onLoad={this.onIframeLoaded}></iframe>
+                <iframe ref={this.iframe} className={`tab__iframe ${this.state.iframeUrl?'':'tab__iframe_hide'}`} onLoad={this.onIframeLoaded}></iframe>
+
+                {!this.state.iframeUrl &&
+                    <div className="tab__not-found">
+                        <img className="tab__warning" src="images/info.png"/>
+                        <div>
+                            <h1>No tools found</h1>
+                            <h2>Add "chrome-extension:my-tools" meta tag to manage this page.</h2>
+                        </div>
+                    </div>
+                }
             </div>
         );
     }

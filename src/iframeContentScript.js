@@ -12,7 +12,7 @@ class IframeContentScript {
     }
 
     unbindEvents() {
-        alert('unbind');
+        // alert('unbind');
         window.removeEventListener('message', this.onMessage);
         ChromeHelper.instance().runtime.onMessage.removeListener(this.onBackgroundMessage);
 
@@ -32,13 +32,14 @@ class IframeContentScript {
             return;
         }
 
-        // alert(message.params);
-        ChromeHelper.instance().runtime.sendMessage(message.params);
+        ChromeHelper.instance().runtime.sendMessage(message);
     }
 
     // on message from background
-    onBackgroundMessage() {
-        window.dispatchEvent(new CustomEvent('my-tools-extension'));
+    onBackgroundMessage(e) {
+        if(e && e.params && e.params.name) {
+            window.dispatchEvent(new CustomEvent(e.params.name, {detail: e.params.params}));
+        }
     }
 }
 

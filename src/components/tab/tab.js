@@ -74,7 +74,7 @@ class Tab extends Component {
     }
 
     loadIframePage() {
-        ChromeHelper.eval(`document.querySelector("meta[name='chrome-extension:my-tools']").getAttribute("content")`,
+        ChromeHelper.eval(`document.querySelector("meta[name='chrome-extension:page-tools']").getAttribute("content")`,
             (url) => {
                 //if(url) {
                     this.iframe.current.contentWindow.location = '';
@@ -146,7 +146,7 @@ class Tab extends Component {
                         <img className="tab__warning" src="images/info.png"/>
                         <div>
                             <h1>No tools found</h1>
-                            <h2>Add "chrome-extension:my-tools" meta tag to manage this page.</h2>
+                            <h2>Add "chrome-extension:page-tools" meta tag to manage this page.</h2>
                         </div>
                     </div>
                 }

@@ -5,7 +5,7 @@ class App extends Component {
   constructor(props) {
       super(props);
       // Init inspector tab page
-      ChromeHelper.instance().devtools.panels.create("My Tools", "favicon.png", "tab.html",
+      ChromeHelper.instance().devtools.panels.create("Page Tools", "favicon.png", "tab.html",
           function(panel) {
             // code invoked on panel creation
           }

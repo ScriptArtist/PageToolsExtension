@@ -28,7 +28,7 @@ class IframeContentScript {
         var message = event.data;
 
         // Only accept messages that we know are ours
-        if (typeof message !== 'object' || message === null || !message.source === 'my-tools-extension') {
+        if (typeof message !== 'object' || message === null || !message.source === 'page-tools-extension') {
             return;
         }
 

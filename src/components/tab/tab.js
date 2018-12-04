@@ -108,6 +108,10 @@ class Tab extends Component {
 
 
     bindChannelEvents() {
+        this.channel.bind("init", (transaction, params) => {
+            this.updateInspectedUrl(params.toolsUrl);
+        });
+
         this.channel.bind("alert", function (transaction, text) {
             alert(text);
         });
@@ -128,14 +132,16 @@ class Tab extends Component {
     }
 
     onIframeLoaded = () => {
-        // if (!this.state.iframeLoading) {
-        //     this.updateInspectedUrl();
-        // }
-        this.setState({iframeLoading: false});
+        this.initChannel();
     };
 
-    updateInspectedUrl() {
-        //this.iframe.current.contentWindow.document;
+    updateInspectedUrl(newUrl) {
+        if(newUrl && !this.state.iframeLoading) {
+            var tabId = ChromeHelper.instance().devtools.inspectedWindow.tabId;
+            ChromeHelper.instance().tabs.update(tabId, {url: newUrl});
+        } else {
+            this.setState({iframeLoading: false});
+        }
     }
 
     render() {

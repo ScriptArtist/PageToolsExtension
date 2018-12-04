@@ -9,5 +9,5 @@
   },
   "devtools_page": "index.html",
   "permissions": ["tabs", "webRequest",  "webRequestBlocking", "<all_urls>"],
-  "version": "0.8.0"
+  "version": "0.9.0"
 }

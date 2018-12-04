@@ -1,6 +1,6 @@
 {
   "name": "Page Tools",
-  "description": "",
+  "description": "Extend Chrome inspector with your project tools",
   "manifest_version": 2,
   "icons": { "64": "favicon.png" },
   "background": {
